@@ -57,7 +57,7 @@
 </head>
 <body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden antialiased">
 
-    <!-- Top Navigation Bar -->
+    <!-- Top Navigation Bar Clean -->
     <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('home')">
             <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-purple to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/20">
@@ -74,23 +74,12 @@
             <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition">
                 <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
             </button>
-            <!-- Premium Button -->
-            <button onclick="openModal('modalPremium')" class="px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-xs shadow-md shadow-orange-500/20 flex items-center gap-1.5">
-                <i class="fa-solid fa-crown text-amber-200"></i> PRO
-            </button>
             <!-- Settings Button -->
             <button onclick="openModal('modalSettings')" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition">
                 <i class="fa-solid fa-gear text-sm"></i>
             </button>
         </div>
     </header>
-
-    <!-- Ad Banner Placeholder (Monetization) -->
-    <div id="adBanner" class="bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 border-b border-slate-300 dark:border-slate-800 py-1.5 px-4 text-center text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
-        <span class="bg-slate-400/30 text-slate-600 dark:text-slate-300 px-1 rounded text-[9px] font-semibold">ANÚNCIO</span>
-        <span>Aumente suas vendas no Mercado Livre e Shopee com fotos Pro!</span>
-        <button onclick="document.getElementById('adBanner').style.display='none'" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
-    </div>
 
     <!-- MAIN APP CONTAINER -->
     <main class="flex-1 flex flex-col max-w-md w-full mx-auto relative pb-20">
@@ -149,7 +138,6 @@
                     <span class="text-xs text-brand-500 font-semibold cursor-pointer" onclick="openModal('modalGallery')">Ver Todos</span>
                 </div>
                 <div id="recentProjectsContainer" class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
-                    <!-- Project Cards standard template dynamically generated or empty state -->
                     <div class="bg-white dark:bg-slate-900 border border-dashed border-slate-300 dark:border-slate-800 min-w-[120px] h-36 rounded-2xl flex flex-col items-center justify-center text-slate-400 gap-2 cursor-pointer hover:border-brand-500" onclick="triggerFileInput('file')">
                         <i class="fa-solid fa-plus text-xl"></i>
                         <span class="text-xs font-medium">Novo Projeto</span>
@@ -400,33 +388,7 @@
         </div>
     </div>
 
-    <!-- Modal 2: Premium Monetization -->
-    <div id="modalPremium" class="hidden fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-gradient-to-b from-slate-900 to-slate-950 text-white w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-amber-500/30 text-center relative overflow-hidden">
-            <button onclick="closeModal('modalPremium')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-
-            <div class="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mx-auto mb-4 text-amber-400 text-2xl">
-                <i class="fa-solid fa-crown"></i>
-            </div>
-
-            <h3 class="text-xl font-extrabold mb-1">Seja PhotoMarket PRO</h3>
-            <p class="text-xs text-slate-400 mb-5">Remova limites, anúncios e exporte em altíssima resolução para vender muito mais.</p>
-
-            <ul class="text-left text-xs space-y-2.5 mb-6 text-slate-300">
-                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-400"></i> Remoção ilimitada de fundo por IA</li>
-                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-400"></i> Sombras ultra-realistas para produtos</li>
-                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-400"></i> Zero anúncios durante a edição</li>
-                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-400"></i> Exportação em resolução Ultra HD</li>
-            </ul>
-
-            <button onclick="alert('Plano Premium Ativado com Sucesso (Simulado)!'); closeModal('modalPremium')" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-sm shadow-lg shadow-orange-500/30 mb-2">
-                Desbloquear Acesso Vitalício
-            </button>
-            <p class="text-[10px] text-slate-500">Pagamento único. Sem assinaturas recorrentes.</p>
-        </div>
-    </div>
-
-    <!-- Modal 3: Settings -->
+    <!-- Modal 2: Settings -->
     <div id="modalSettings" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 shadow-2xl border border-slate-200 dark:border-slate-800">
             <div class="flex justify-between items-center mb-4">
@@ -459,7 +421,7 @@
         </div>
     </div>
 
-    <!-- Modal 4: Full Gallery -->
+    <!-- Modal 3: Full Gallery -->
     <div id="modalGallery" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex flex-col p-4">
         <div class="flex justify-between items-center mb-4 text-white">
             <h3 class="font-bold text-base">Galeria de Projetos</h3>
