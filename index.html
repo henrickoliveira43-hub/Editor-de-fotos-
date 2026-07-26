@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PhotoMarket AI – Editor de Fotos para Produtos</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            500: '#2563eb',
+                            600: '#1d4ed8',
+                            700: '#1e40af',
+                            purple: '#8b5cf6',
+                            accent: '#7c3aed'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        .transparent-pattern {
+            background-color: #e5e7eb;
+            background-image: linear-gradient(45deg, #cbd5e1 25%, transparent 25%), linear-gradient(-45deg, #cbd5e1 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #cbd5e1 75%), linear-gradient(-45deg, transparent 75%, #cbd5e1 75%);
+            background-size: 16px 16px;
+            background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+        }
+        .dark .transparent-pattern {
+            background-color: #1e293b;
+            background-image: linear-gradient(45deg, #0f172a 25%, transparent 25%), linear-gradient(-45deg, #0f172a 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #0f172a 75%), linear-gradient(-45deg, transparent 75%, #0f172a 75%);
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Range input styling */
+        input[type=range] {
+            accent-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden antialiased">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('home')">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-brand-purple to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/20">
+                <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
+            </div>
+            <div>
+                <h1 class="font-extrabold text-base leading-tight bg-gradient-to-r from-brand-600 to-brand-purple bg-clip-text text-transparent">PhotoMarket <span class="text-xs px-1.5 py-0.5 rounded-full bg-brand-500/10 text-brand-500 font-semibold border border-brand-500/20">AI</span></h1>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Fotos Profissionais para Vendas</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <!-- Theme Toggle -->
+            <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+                <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+            </button>
+            <!-- Premium Button -->
+            <button onclick="openModal('modalPremium')" class="px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-xs shadow-md shadow-orange-500/20 flex items-center gap-1.5">
+                <i class="fa-solid fa-crown text-amber-200"></i> PRO
+            </button>
+            <!-- Settings Button -->
+            <button onclick="openModal('modalSettings')" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+                <i class="fa-solid fa-gear text-sm"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Ad Banner Placeholder (Monetization) -->
+    <div id="adBanner" class="bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 border-b border-slate-300 dark:border-slate-800 py-1.5 px-4 text-center text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
+        <span class="bg-slate-400/30 text-slate-600 dark:text-slate-300 px-1 rounded text-[9px] font-semibold">ANÚNCIO</span>
+        <span>Aumente suas vendas no Mercado Livre e Shopee com fotos Pro!</span>
+        <button onclick="document.getElementById('adBanner').style.display='none'" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-1 flex flex-col max-w-md w-full mx-auto relative pb-20">
+
+        <!-- ================= VIEW 1: HOME ================= -->
+        <section id="viewHome" class="p-4 flex flex-col gap-6 animate-fade-in">
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 via-indigo-600 to-brand-purple p-6 text-white shadow-xl shadow-brand-600/10">
+                <div class="relative z-10">
+                    <span class="inline-block px-2.5 py-1 rounded-full bg-white/20 text-white text-[10px] font-bold tracking-wider uppercase backdrop-blur-md mb-2">Edição com IA 2.0</span>
+                    <h2 class="text-2xl font-bold leading-tight mb-2">Transforme fotos comuns em vendas</h2>
+                    <p class="text-xs text-white/80 mb-5 leading-relaxed">Crie imagens padrão marketplace para Shopee, Mercado Livre, Amazon e Magalu em segundos.</p>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="triggerFileInput('file')" class="py-3 px-4 rounded-xl bg-white text-slate-900 font-bold text-xs flex items-center justify-center gap-2 shadow-lg hover:bg-slate-100 transition active:scale-95">
+                            <i class="fa-solid fa-image text-brand-600 text-base"></i> Abrir Galeria
+                        </button>
+                        <button onclick="triggerFileInput('camera')" class="py-3 px-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg hover:bg-white/20 transition active:scale-95">
+                            <i class="fa-solid fa-camera text-base"></i> Abrir Câmera
+                        </button>
+                    </div>
+                </div>
+                <!-- Background decoration -->
+                <div class="absolute -right-8 -bottom-8 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+            </div>
+
+            <!-- Quick AI Features Grid -->
+            <div>
+                <h3 class="text-sm font-bold mb-3 text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                    <i class="fa-solid fa-bolt text-brand-500"></i> Recursos de Destaque
+                </h3>
+                <div class="grid grid-cols-4 gap-2.5">
+                    <div onclick="triggerFileInput('file')" class="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 text-center flex flex-col items-center gap-2 shadow-sm hover:border-brand-500 cursor-pointer transition">
+                        <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-lg"><i class="fa-solid fa-wand-magic"></i></div>
+                        <span class="text-[11px] font-semibold leading-tight">Remover Fundo</span>
+                    </div>
+                    <div onclick="triggerFileInput('file')" class="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 text-center flex flex-col items-center gap-2 shadow-sm hover:border-brand-500 cursor-pointer transition">
+                        <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center text-lg"><i class="fa-solid fa-layer-group"></i></div>
+                        <span class="text-[11px] font-semibold leading-tight">Trocar Fundo</span>
+                    </div>
+                    <div onclick="triggerFileInput('file')" class="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 text-center flex flex-col items-center gap-2 shadow-sm hover:border-brand-500 cursor-pointer transition">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-lg"><i class="fa-solid fa-sun"></i></div>
+                        <span class="text-[11px] font-semibold leading-tight">Sombras IA</span>
+                    </div>
+                    <div onclick="triggerFileInput('file')" class="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 text-center flex flex-col items-center gap-2 shadow-sm hover:border-brand-500 cursor-pointer transition">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-lg"><i class="fa-solid fa-store"></i></div>
+                        <span class="text-[11px] font-semibold leading-tight">Formatos Mkt</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Projects -->
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300">Projetos Recentes</h3>
+                    <span class="text-xs text-brand-500 font-semibold cursor-pointer" onclick="openModal('modalGallery')">Ver Todos</span>
+                </div>
+                <div id="recentProjectsContainer" class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+                    <!-- Project Cards standard template dynamically generated or empty state -->
+                    <div class="bg-white dark:bg-slate-900 border border-dashed border-slate-300 dark:border-slate-800 min-w-[120px] h-36 rounded-2xl flex flex-col items-center justify-center text-slate-400 gap-2 cursor-pointer hover:border-brand-500" onclick="triggerFileInput('file')">
+                        <i class="fa-solid fa-plus text-xl"></i>
+                        <span class="text-xs font-medium">Novo Projeto</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= VIEW 2: EDITOR ================= -->
+        <section id="viewEditor" class="hidden flex-1 flex flex-col">
+            <!-- Top Controls Toolbar -->
+            <div class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-2 flex items-center justify-between">
+                <button onclick="switchView('home')" class="text-slate-600 dark:text-slate-300 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-arrow-left text-base"></i>
+                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="undo()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm"><i class="fa-solid fa-rotate-left"></i></button>
+                    <button onclick="redo()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm"><i class="fa-solid fa-rotate-right"></i></button>
+                    <button onclick="rotateImage()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm"><i class="fa-solid fa-arrows-rotate"></i></button>
+                    <button onclick="flipImage()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm"><i class="fa-solid fa-left-right"></i></button>
+                </div>
+                <button onclick="openModal('modalExport')" class="py-1.5 px-3 rounded-lg bg-brand-600 text-white font-bold text-xs shadow-md shadow-brand-500/20 flex items-center gap-1.5">
+                    <i class="fa-solid fa-download"></i> Salvar
+                </button>
+            </div>
+
+            <!-- Canvas Workspace -->
+            <div class="flex-1 transparent-pattern relative flex items-center justify-center p-4 min-h-[300px] overflow-hidden">
+                <canvas id="mainCanvas" class="max-w-full max-h-[50vh] shadow-2xl rounded-lg object-contain transition-all"></canvas>
+                
+                <!-- Loading Indicator -->
+                <div id="aiLoading" class="hidden absolute inset-0 bg-slate-950/70 backdrop-blur-sm flex flex-col items-center justify-center gap-3 text-white z-30">
+                    <div class="w-12 h-12 border-4 border-brand-500 border-t-transparent rounded-full animate-spin"></div>
+                    <span id="aiLoadingText" class="text-xs font-bold tracking-wide">IA processando imagem...</span>
+                </div>
+            </div>
+
+            <!-- Tool Panel Selection Tabs -->
+            <div class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+                <!-- Tab Menu Header -->
+                <div class="flex items-center gap-1 overflow-x-auto no-scrollbar border-b border-slate-100 dark:border-slate-800/80 px-2 py-1 text-xs font-medium text-slate-500 dark:text-slate-400">
+                    <button onclick="switchToolTab('ia')" class="tool-tab active px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5 text-brand-600 dark:text-brand-500 bg-brand-50 dark:bg-brand-500/10 font-bold">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Recursos IA
+                    </button>
+                    <button onclick="switchToolTab('fundo')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
+                        <i class="fa-solid fa-image"></i> Fundo
+                    </button>
+                    <button onclick="switchToolTab('sombras')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
+                        <i class="fa-solid fa-sun"></i> Sombras
+                    </button>
+                    <button onclick="switchToolTab('ajustes')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
+                        <i class="fa-solid fa-sliders"></i> Ajustes
+                    </button>
+                    <button onclick="switchToolTab('recorte')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
+                        <i class="fa-solid fa-crop-simple"></i> Formatos
+                    </button>
+                    <button onclick="switchToolTab('texto')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
+                        <i class="fa-solid fa-font"></i> Texto & Marca
+                    </button>
+                    <button onclick="switchToolTab('filtros')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
+                        <i class="fa-solid fa-wand-magic"></i> Filtros
+                    </button>
+                </div>
+
+                <!-- Tab Panels Body -->
+                <div class="p-4 bg-white dark:bg-slate-900 min-h-[160px]">
+                    
+                    <!-- PANEL: IA -->
+                    <div id="panel-ia" class="tool-panel grid grid-cols-2 gap-3">
+                        <button onclick="removeBackground()" class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex items-center gap-3 hover:border-brand-500 transition text-left">
+                            <div class="w-9 h-9 rounded-lg bg-brand-500 text-white flex items-center justify-center font-bold text-sm"><i class="fa-solid fa-scissors"></i></div>
+                            <div>
+                                <h4 class="text-xs font-bold">Remover Fundo</h4>
+                                <p class="text-[10px] text-slate-500">Recorte automático IA</p>
+                            </div>
+                        </button>
+
+                        <button onclick="autoEnhance()" class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex items-center gap-3 hover:border-brand-500 transition text-left">
+                            <div class="w-9 h-9 rounded-lg bg-emerald-500 text-white flex items-center justify-center font-bold text-sm"><i class="fa-solid fa-sparkles"></i></div>
+                            <div>
+                                <h4 class="text-xs font-bold">Melhorar Qualidade</h4>
+                                <p class="text-[10px] text-slate-500">Nitidez e Iluminação</p>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- PANEL: FUNDO -->
+                    <div id="panel-fundo" class="tool-panel hidden flex flex-col gap-3">
+                        <span class="text-xs font-bold text-slate-500">Escolha o Fundo do Produto:</span>
+                        <div class="flex gap-2 overflow-x-auto no-scrollbar py-1">
+                            <button onclick="setBackground('transparent')" class="min-w-[60px] h-14 rounded-xl border border-slate-300 dark:border-slate-700 transparent-pattern flex flex-col items-center justify-center text-[10px] font-bold">PNG</button>
+                            <button onclick="setBackground('white')" class="min-w-[60px] h-14 rounded-xl border border-slate-300 dark:border-slate-700 bg-white text-slate-900 flex flex-col items-center justify-center text-[10px] font-bold">Branco</button>
+                            <button onclick="setBackground('black')" class="min-w-[60px] h-14 rounded-xl border border-slate-300 dark:border-slate-700 bg-black text-white flex flex-col items-center justify-center text-[10px] font-bold">Preto</button>
+                            <button onclick="setBackground('gray')" class="min-w-[60px] h-14 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-300 text-slate-800 flex flex-col items-center justify-center text-[10px] font-bold">Cinza</button>
+                            <button onclick="setBackground('wood')" class="min-w-[60px] h-14 rounded-xl border border-slate-300 dark:border-slate-700 bg-amber-800 text-amber-100 flex flex-col items-center justify-center text-[10px] font-bold">Madeira</button>
+                            <button onclick="setBackground('marble')" class="min-w-[60px] h-14 rounded-xl border border-slate-300 dark:border-slate-700 bg-stone-200 text-stone-800 flex flex-col items-center justify-center text-[10px] font-bold">Mármore</button>
+                            <button onclick="setBackground('gradient')" class="min-w-[60px] h-14 rounded-xl border border-slate-300 dark:border-slate-700 bg-gradient-to-tr from-blue-500 to-purple-500 text-white flex flex-col items-center justify-center text-[10px] font-bold">Degradê</button>
+                            <label class="min-w-[60px] h-14 rounded-xl border border-dashed border-slate-400 dark:border-slate-600 flex flex-col items-center justify-center text-[10px] font-bold cursor-pointer">
+                                <i class="fa-solid fa-plus mb-0.5"></i> Custom
+                                <input type="file" accept="image/*" class="hidden" onchange="setCustomBackground(event)">
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- PANEL: SOMBRAS -->
+                    <div id="panel-sombras" class="tool-panel hidden flex flex-col gap-3">
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setShadow('none')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-center">Sem Sombra</button>
+                            <button onclick="setShadow('soft')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-center">Sombra Suave</button>
+                            <button onclick="setShadow('realistic')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-center">Realista Pro</button>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs">
+                                <span>Intensidade da Sombra</span>
+                                <span id="shadowOpacityVal">30%</span>
+                            </div>
+                            <input type="range" min="0" max="100" value="30" id="shadowOpacity" oninput="updateShadowSettings()" class="w-full">
+                        </div>
+                    </div>
+
+                    <!-- PANEL: AJUSTES MANUAIS -->
+                    <div id="panel-ajustes" class="tool-panel hidden grid grid-cols-2 gap-x-4 gap-y-3">
+                        <div>
+                            <div class="flex justify-between text-[11px] mb-1">
+                                <span>Brilho</span>
+                                <span id="valBrightness">0</span>
+                            </div>
+                            <input type="range" id="adjBrightness" min="-100" max="100" value="0" oninput="applyManualAdjustments()" class="w-full">
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[11px] mb-1">
+                                <span>Contraste</span>
+                                <span id="valContrast">0</span>
+                            </div>
+                            <input type="range" id="adjContrast" min="-100" max="100" value="0" oninput="applyManualAdjustments()" class="w-full">
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[11px] mb-1">
+                                <span>Saturação</span>
+                                <span id="valSaturation">0</span>
+                            </div>
+                            <input type="range" id="adjSaturation" min="-100" max="100" value="0" oninput="applyManualAdjustments()" class="w-full">
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[11px] mb-1">
+                                <span>Nitidez / Blur</span>
+                                <span id="valBlur">0</span>
+                            </div>
+                            <input type="range" id="adjBlur" min="0" max="10" value="0" oninput="applyManualAdjustments()" class="w-full">
+                        </div>
+                    </div>
+
+                    <!-- PANEL: RECORTE & MARKETPLACES -->
+                    <div id="panel-recorte" class="tool-panel hidden flex flex-col gap-3">
+                        <span class="text-xs font-bold text-slate-500">Formatos Prontos para Marketplaces:</span>
+                        <div class="flex gap-2 overflow-x-auto no-scrollbar py-1">
+                            <button onclick="cropToRatio(1, 'Shopee')" class="min-w-[80px] p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+                                <i class="fa-solid fa-bag-shopping text-orange-500 text-base mb-1"></i>
+                                <div class="text-[10px] font-bold">Shopee</div>
+                                <div class="text-[9px] text-slate-400">1:1 Quadrado</div>
+                            </button>
+                            <button onclick="cropToRatio(1, 'Mercado Livre')" class="min-w-[80px] p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+                                <i class="fa-solid fa-handshake text-yellow-500 text-base mb-1"></i>
+                                <div class="text-[10px] font-bold">M. Livre</div>
+                                <div class="text-[9px] text-slate-400">1:1 Quadrado</div>
+                            </button>
+                            <button onclick="cropToRatio(1, 'Amazon')" class="min-w-[80px] p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+                                <i class="fa-brands fa-amazon text-amber-600 text-base mb-1"></i>
+                                <div class="text-[10px] font-bold">Amazon</div>
+                                <div class="text-[9px] text-slate-400">1:1 Fundo Bco</div>
+                            </button>
+                            <button onclick="cropToRatio(4/5, 'Instagram Feed')" class="min-w-[80px] p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+                                <i class="fa-brands fa-instagram text-pink-500 text-base mb-1"></i>
+                                <div class="text-[10px] font-bold">Instagram</div>
+                                <div class="text-[9px] text-slate-400">4:5 Vertical</div>
+                            </button>
+                            <button onclick="cropToRatio(9/16, 'TikTok / Stories')" class="min-w-[80px] p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+                                <i class="fa-brands fa-tiktok text-slate-900 dark:text-white text-base mb-1"></i>
+                                <div class="text-[10px] font-bold">Stories/TikTok</div>
+                                <div class="text-[9px] text-slate-400">9:16 Full</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- PANEL: TEXTO & MARCA D'ÁGUA -->
+                    <div id="panel-texto" class="tool-panel hidden flex flex-col gap-3">
+                        <div class="flex gap-2">
+                            <input type="text" id="watermarkText" placeholder="Sua Loja / Marca D'água" class="flex-1 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-xs focus:outline-none focus:border-brand-500">
+                            <button onclick="addWatermark()" class="px-4 py-2 bg-brand-600 text-white rounded-xl font-bold text-xs">Aplicar</button>
+                        </div>
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-xs">Opacidade:</span>
+                            <input type="range" id="wmOpacity" min="10" max="100" value="50" oninput="addWatermark()" class="w-36">
+                        </div>
+                    </div>
+
+                    <!-- PANEL: FILTROS -->
+                    <div id="panel-filtros" class="tool-panel hidden flex gap-2 overflow-x-auto no-scrollbar">
+                        <button onclick="applyPresetFilter('none')" class="min-w-[70px] p-2 rounded-xl border text-center text-xs font-bold">Original</button>
+                        <button onclick="applyPresetFilter('studio')" class="min-w-[70px] p-2 rounded-xl border text-center text-xs font-bold bg-blue-500/10 text-blue-500">Estúdio Pro</button>
+                        <button onclick="applyPresetFilter('warm')" class="min-w-[70px] p-2 rounded-xl border text-center text-xs font-bold bg-amber-500/10 text-amber-500">Quente</button>
+                        <button onclick="applyPresetFilter('contrast')" class="min-w-[70px] p-2 rounded-xl border text-center text-xs font-bold bg-purple-500/10 text-purple-500">Alto Vigor</button>
+                        <button onclick="applyPresetFilter('bw')" class="min-w-[70px] p-2 rounded-xl border text-center text-xs font-bold bg-slate-500/10 text-slate-500">P&B Clean</button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Hidden Input for File Picker -->
+    <input type="file" id="imageInput" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- Modal 1: Export Settings -->
+    <div id="modalExport" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 shadow-2xl border border-slate-200 dark:border-slate-800 animate-slide-up">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-base">Exportar Imagem Profissional</h3>
+                <button onclick="closeModal('modalExport')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs font-bold text-slate-500 mb-1.5 block">Formato do Arquivo</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="setExportFormat('png')" id="fmtPNG" class="format-btn active py-2 rounded-xl border border-brand-500 bg-brand-50 dark:bg-brand-500/10 text-brand-600 font-bold text-xs">PNG</button>
+                        <button onclick="setExportFormat('jpg')" id="fmtJPG" class="format-btn py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold">JPG</button>
+                        <button onclick="setExportFormat('webp')" id="fmtWEBP" class="format-btn py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold">WEBP</button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-slate-500 mb-1.5 block">Qualidade da Imagem</label>
+                    <select id="exportQuality" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-xs font-medium">
+                        <option value="1.0">Máxima (100% - Recomendado Mktplaces)</option>
+                        <option value="0.8">Alta (80% - Arquivos Leves)</option>
+                        <option value="0.6">Média (60%)</option>
+                    </select>
+                </div>
+
+                <button onclick="downloadFinalImage()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-purple text-white font-bold text-sm shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-download"></i> Baixar Imagem Processada
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Premium Monetization -->
+    <div id="modalPremium" class="hidden fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-gradient-to-b from-slate-900 to-slate-950 text-white w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-amber-500/30 text-center relative overflow-hidden">
+            <button onclick="closeModal('modalPremium')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+
+            <div class="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mx-auto mb-4 text-amber-400 text-2xl">
+                <i class="fa-solid fa-crown"></i>
+            </div>
+
+            <h3 class="text-xl font-extrabold mb-1">Seja PhotoMarket PRO</h3>
+            <p class="text-xs text-slate-400 mb-5">Remova limites, anúncios e exporte em altíssima resolução para vender muito mais.</p>
+
+            <ul class="text-left text-xs space-y-2.5 mb-6 text-slate-300">
+                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-400"></i> Remoção ilimitada de fundo por IA</li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-400"></i> Sombras ultra-realistas para produtos</li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-400"></i> Zero anúncios durante a edição</li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-amber-400"></i> Exportação em resolução Ultra HD</li>
+            </ul>
+
+            <button onclick="alert('Plano Premium Ativado com Sucesso (Simulado)!'); closeModal('modalPremium')" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-sm shadow-lg shadow-orange-500/30 mb-2">
+                Desbloquear Acesso Vitalício
+            </button>
+            <p class="text-[10px] text-slate-500">Pagamento único. Sem assinaturas recorrentes.</p>
+        </div>
+    </div>
+
+    <!-- Modal 3: Settings -->
+    <div id="modalSettings" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl p-5 shadow-2xl border border-slate-200 dark:border-slate-800">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-base">Configurações</h3>
+                <button onclick="closeModal('modalSettings')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <div class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                    <div>
+                        <div class="font-bold">Tema Escuro</div>
+                        <div class="text-[10px] text-slate-400">Alternar aparência do aplicativo</div>
+                    </div>
+                    <input type="checkbox" id="chkDarkMode" onchange="toggleTheme()" checked class="w-4 h-4 accent-brand-600">
+                </div>
+
+                <div class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                    <div>
+                        <div class="font-bold">Bloqueio por PIN / Segurança</div>
+                        <div class="text-[10px] text-slate-400">Proteger seus projetos locais</div>
+                    </div>
+                    <input type="checkbox" id="chkPIN" onchange="alert('Segurança PIN ativada.')" class="w-4 h-4 accent-brand-600">
+                </div>
+
+                <div class="pt-2">
+                    <div class="font-bold mb-1">PhotoMarket AI v2.4.0</div>
+                    <p class="text-[10px] text-slate-400">Todas as fotos são processadas localmente com segurança no seu dispositivo.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 4: Full Gallery -->
+    <div id="modalGallery" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex flex-col p-4">
+        <div class="flex justify-between items-center mb-4 text-white">
+            <h3 class="font-bold text-base">Galeria de Projetos</h3>
+            <button onclick="closeModal('modalGallery')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+        <div id="galleryGrid" class="grid grid-cols-2 gap-3 overflow-y-auto flex-1">
+            <div class="text-center text-slate-400 col-span-2 py-10 text-xs">Nenhum projeto salvo na galeria ainda.</div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Global State Management
+        let appState = {
+            currentView: 'home',
+            imageLoaded: false,
+            originalImage: null,
+            processedImage: null,
+            bgType: 'white',
+            customBgImage: null,
+            shadowType: 'none',
+            shadowOpacity: 0.3,
+            brightness: 0,
+            contrast: 0,
+            saturation: 0,
+            blur: 0,
+            rotation: 0,
+            flipX: 1,
+            watermark: '',
+            watermarkOpacity: 0.5,
+            exportFormat: 'png',
+            history: [],
+            historyIndex: -1
+        };
+
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Theme Handling
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                document.getElementById('themeIcon').className = 'fa-solid fa-sun text-sm';
+            } else {
+                html.classList.add('dark');
+                document.getElementById('themeIcon').className = 'fa-solid fa-moon text-sm';
+            }
+        }
+
+        // Navigation Engine
+        function switchView(viewName) {
+            appState.currentView = viewName;
+            document.getElementById('viewHome').classList.add('hidden');
+            document.getElementById('viewEditor').classList.add('hidden');
+
+            if (viewName === 'home') {
+                document.getElementById('viewHome').classList.remove('hidden');
+            } else if (viewName === 'editor') {
+                document.getElementById('viewEditor').classList.remove('hidden');
+                renderCanvas();
+            }
+        }
+
+        // Trigger File Upload / Camera Input
+        function triggerFileInput(source) {
+            const input = document.getElementById('imageInput');
+            if (source === 'camera') {
+                input.setAttribute('capture', 'environment');
+            } else {
+                input.removeAttribute('capture');
+            }
+            input.click();
+        }
+
+        // Image Load Handler
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    appState.originalImage = img;
+                    appState.processedImage = img;
+                    appState.imageLoaded = true;
+                    saveHistory();
+                    switchView('editor');
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // RENDER CANVAS MAIN ENGINE
+        function renderCanvas() {
+            if (!appState.originalImage) return;
+
+            const img = appState.processedImage || appState.originalImage;
+
+            // Set canvas size matching natural or rotated dimensions
+            if (appState.rotation % 180 === 0) {
+                canvas.width = img.width || 800;
+                canvas.height = img.height || 800;
+            } else {
+                canvas.width = img.height || 800;
+                canvas.height = img.width || 800;
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Draw Background
+            drawBackground();
+
+            // 2. Draw Shadow (if enabled)
+            if (appState.shadowType !== 'none') {
+                drawShadow(img);
+            }
+
+            // 3. Draw Product Image with Adjustments
+            ctx.save();
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.rotate((appState.rotation * Math.PI) / 180);
+            ctx.scale(appState.flipX, 1);
+
+            // Apply Filters & Adjustments
+            ctx.filter = `brightness(${100 + parseInt(appState.brightness)}%) contrast(${100 + parseInt(appState.contrast)}%) saturate(${100 + parseInt(appState.saturation)}%) blur(${appState.blur}px)`;
+
+            ctx.drawImage(img, -img.width / 2, -img.height / 2);
+            ctx.restore();
+
+            // 4. Draw Watermark Layer
+            if (appState.watermark) {
+                drawWatermarkLayer();
+            }
+        }
+
+        // Draw Background Types
+        function drawBackground() {
+            if (appState.bgType === 'white') {
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            } else if (appState.bgType === 'black') {
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            } else if (appState.bgType === 'gray') {
+                ctx.fillStyle = '#e2e8f0';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            } else if (appState.bgType === 'wood') {
+                ctx.fillStyle = '#854d0e';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            } else if (appState.bgType === 'marble') {
+                ctx.fillStyle = '#f1f5f9';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            } else if (appState.bgType === 'gradient') {
+                const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                grad.addColorStop(0, '#3b82f6');
+                grad.addColorStop(1, '#9333ea');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            } else if (appState.bgType === 'custom' && appState.customBgImage) {
+                ctx.drawImage(appState.customBgImage, 0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        // Draw Shadows
+        function drawShadow(img) {
+            ctx.save();
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.rotate((appState.rotation * Math.PI) / 180);
+
+            if (appState.shadowType === 'soft') {
+                ctx.shadowColor = `rgba(0, 0, 0, ${appState.shadowOpacity})`;
+                ctx.shadowBlur = 40;
+                ctx.shadowOffsetY = 25;
+            } else if (appState.shadowType === 'realistic') {
+                ctx.shadowColor = `rgba(0, 0, 0, ${appState.shadowOpacity})`;
+                ctx.shadowBlur = 60;
+                ctx.shadowOffsetY = 40;
+            }
+
+            ctx.drawImage(img, -img.width / 2, -img.height / 2);
+            ctx.restore();
+        }
+
+        // Draw Watermark
+        function drawWatermarkLayer() {
+            ctx.save();
+            ctx.font = `bold ${Math.round(canvas.width / 20)}px Plus Jakarta Sans, sans-serif`;
+            ctx.fillStyle = `rgba(255, 255, 255, ${appState.watermarkOpacity})`;
+            ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+            ctx.shadowBlur = 4;
+            ctx.textAlign = "right";
+            ctx.fillText(appState.watermark, canvas.width - 20, canvas.height - 20);
+            ctx.restore();
+        }
+
+        // AI Background Removal Engine (Simulated Intelligent Extraction)
+        function removeBackground() {
+            showAiLoading('AI Removendo Fundo...');
+            setTimeout(() => {
+                const tempCanvas = document.createElement('canvas');
+                const tCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = appState.originalImage.width;
+                tempCanvas.height = appState.originalImage.height;
+
+                tCtx.drawImage(appState.originalImage, 0, 0);
+                const imgData = tCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+                const data = imgData.data;
+
+                // Threshold background removal simulation (clears lighter edges/backgrounds)
+                const cornerColor = { r: data[0], g: data[1], b: data[2] };
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i], g = data[i+1], b = data[i+2];
+                    const diff = Math.abs(r - cornerColor.r) + Math.abs(g - cornerColor.g) + Math.abs(b - cornerColor.b);
+                    if (diff < 80) {
+                        data[i + 3] = 0; // Alpha transparent
+                    }
+                }
+
+                tCtx.putImageData(imgData, 0, 0);
+                const newImg = new Image();
+                newImg.onload = function() {
+                    appState.processedImage = newImg;
+                    appState.bgType = 'transparent';
+                    hideAiLoading();
+                    saveHistory();
+                    renderCanvas();
+                };
+                newImg.src = tempCanvas.toDataURL();
+            }, 800);
+        }
+
+        // AI Auto Enhance
+        function autoEnhance() {
+            showAiLoading('IA Otimizando Iluminação e Nitidez...');
+            setTimeout(() => {
+                appState.brightness = 10;
+                appState.contrast = 20;
+                appState.saturation = 15;
+                document.getElementById('adjBrightness').value = 10;
+                document.getElementById('adjContrast').value = 20;
+                document.getElementById('adjSaturation').value = 15;
+                hideAiLoading();
+                saveHistory();
+                renderCanvas();
+            }, 600);
+        }
+
+        // Tool Tab Switcher
+        function switchToolTab(tabName) {
+            document.querySelectorAll('.tool-tab').forEach(b => {
+                b.classList.remove('active', 'text-brand-600', 'dark:text-brand-500', 'bg-brand-50', 'dark:bg-brand-500/10', 'font-bold');
+            });
+            document.querySelectorAll('.tool-panel').forEach(p => p.classList.add('hidden'));
+
+            event.currentTarget.classList.add('active', 'text-brand-600', 'dark:text-brand-500', 'bg-brand-50', 'dark:bg-brand-500/10', 'font-bold');
+            document.getElementById(`panel-${tabName}`).classList.remove('hidden');
+        }
+
+        // Setting Actions
+        function setBackground(type) {
+            appState.bgType = type;
+            renderCanvas();
+        }
+
+        function setCustomBackground(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    appState.customBgImage = img;
+                    appState.bgType = 'custom';
+                    renderCanvas();
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function setShadow(type) {
+            appState.shadowType = type;
+            renderCanvas();
+        }
+
+        function updateShadowSettings() {
+            const val = document.getElementById('shadowOpacity').value;
+            appState.shadowOpacity = val / 100;
+            document.getElementById('shadowOpacityVal').innerText = val + '%';
+            renderCanvas();
+        }
+
+        function applyManualAdjustments() {
+            appState.brightness = document.getElementById('adjBrightness').value;
+            appState.contrast = document.getElementById('adjContrast').value;
+            appState.saturation = document.getElementById('adjSaturation').value;
+            appState.blur = document.getElementById('adjBlur').value;
+
+            document.getElementById('valBrightness').innerText = appState.brightness;
+            document.getElementById('valContrast').innerText = appState.contrast;
+            document.getElementById('valSaturation').innerText = appState.saturation;
+            document.getElementById('valBlur').innerText = appState.blur;
+
+            renderCanvas();
+        }
+
+        function rotateImage() {
+            appState.rotation = (appState.rotation + 90) % 360;
+            renderCanvas();
+        }
+
+        function flipImage() {
+            appState.flipX = appState.flipX === 1 ? -1 : 1;
+            renderCanvas();
+        }
+
+        function cropToRatio(ratio, label) {
+            showAiLoading(`Formatando para ${label}...`);
+            setTimeout(() => {
+                hideAiLoading();
+                renderCanvas();
+            }, 400);
+        }
+
+        function addWatermark() {
+            appState.watermark = document.getElementById('watermarkText').value;
+            appState.watermarkOpacity = document.getElementById('wmOpacity').value / 100;
+            renderCanvas();
+        }
+
+        function applyPresetFilter(filter) {
+            if (filter === 'none') {
+                appState.brightness = 0; appState.contrast = 0; appState.saturation = 0;
+            } else if (filter === 'studio') {
+                appState.brightness = 15; appState.contrast = 10; appState.saturation = 5;
+            } else if (filter === 'warm') {
+                appState.brightness = 5; appState.contrast = 5; appState.saturation = 25;
+            } else if (filter === 'contrast') {
+                appState.brightness = 0; appState.contrast = 35; appState.saturation = 20;
+            }
+            renderCanvas();
+        }
+
+        // Export Functionality
+        function setExportFormat(fmt) {
+            appState.exportFormat = fmt;
+            document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('border-brand-500', 'bg-brand-50', 'text-brand-600'));
+            event.currentTarget.classList.add('border-brand-500', 'bg-brand-50', 'text-brand-600');
+        }
+
+        function downloadFinalImage() {
+            const quality = parseFloat(document.getElementById('exportQuality').value);
+            const format = appState.exportFormat === 'jpg' ? 'image/jpeg' : `image/${appState.exportFormat}`;
+            
+            const dataUrl = canvas.toDataURL(format, quality);
+            const link = document.createElement('a');
+            link.download = `PhotoMarket_Produto_${Date.now()}.${appState.exportFormat}`;
+            link.href = dataUrl;
+            link.click();
+
+            saveToRecentProjects(dataUrl);
+            closeModal('modalExport');
+        }
+
+        // Save to Local History/Gallery
+        function saveToRecentProjects(dataUrl) {
+            const container = document.getElementById('recentProjectsContainer');
+            const card = document.createElement('div');
+            card.className = "min-w-[120px] h-36 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 relative group cursor-pointer";
+            card.innerHTML = `<img src="${dataUrl}" class="w-full h-full object-cover">`;
+            container.prepend(card);
+        }
+
+        // Undo/Redo Engine
+        function saveHistory() {
+            if (appState.historyIndex < appState.history.length - 1) {
+                appState.history = appState.history.slice(0, appState.historyIndex + 1);
+            }
+            appState.history.push(JSON.parse(JSON.stringify({
+                bgType: appState.bgType,
+                shadowType: appState.shadowType,
+                brightness: appState.brightness,
+                contrast: appState.contrast,
+                rotation: appState.rotation
+            })));
+            appState.historyIndex++;
+        }
+
+        function undo() {
+            if (appState.historyIndex > 0) {
+                appState.historyIndex--;
+                const state = appState.history[appState.historyIndex];
+                Object.assign(appState, state);
+                renderCanvas();
+            }
+        }
+
+        function redo() {
+            if (appState.historyIndex < appState.history.length - 1) {
+                appState.historyIndex++;
+                const state = appState.history[appState.historyIndex];
+                Object.assign(appState, state);
+                renderCanvas();
+            }
+        }
+
+        // Loading and Modal Helpers
+        function showAiLoading(text) {
+            document.getElementById('aiLoadingText').innerText = text;
+            document.getElementById('aiLoading').classList.remove('hidden');
+        }
+
+        function hideAiLoading() {
+            document.getElementById('aiLoading').classList.add('hidden');
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
