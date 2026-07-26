@@ -71,18 +71,18 @@
 
         <div class="flex items-center gap-2">
             <!-- Theme Toggle -->
-            <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+            <button onclick="toggleTheme()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Alternar Tema">
                 <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
             </button>
             <!-- Settings Button -->
-            <button onclick="openModal('modalSettings')" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+            <button onclick="openModal('modalSettings')" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Configurações">
                 <i class="fa-solid fa-gear text-sm"></i>
             </button>
         </div>
     </header>
 
     <!-- MAIN APP CONTAINER -->
-    <main class="flex-1 flex flex-col max-w-md w-full mx-auto relative pb-20">
+    <main class="flex-1 flex flex-col max-w-md w-full mx-auto relative pb-6">
 
         <!-- ================= VIEW 1: HOME ================= -->
         <section id="viewHome" class="p-4 flex flex-col gap-6 animate-fade-in">
@@ -150,14 +150,14 @@
         <section id="viewEditor" class="hidden flex-1 flex flex-col">
             <!-- Top Controls Toolbar -->
             <div class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-2 flex items-center justify-between">
-                <button onclick="switchView('home')" class="text-slate-600 dark:text-slate-300 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+                <button onclick="switchView('home')" class="text-slate-600 dark:text-slate-300 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" title="Voltar">
                     <i class="fa-solid fa-arrow-left text-base"></i>
                 </button>
                 <div class="flex items-center gap-2">
-                    <button onclick="undo()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm"><i class="fa-solid fa-rotate-left"></i></button>
-                    <button onclick="redo()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm"><i class="fa-solid fa-rotate-right"></i></button>
-                    <button onclick="rotateImage()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm"><i class="fa-solid fa-arrows-rotate"></i></button>
-                    <button onclick="flipImage()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm"><i class="fa-solid fa-left-right"></i></button>
+                    <button onclick="undo()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm" title="Desfazer"><i class="fa-solid fa-rotate-left"></i></button>
+                    <button onclick="redo()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm" title="Refazer"><i class="fa-solid fa-rotate-right"></i></button>
+                    <button onclick="rotateImage()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm" title="Girar 90°"><i class="fa-solid fa-arrows-rotate"></i></button>
+                    <button onclick="flipImage()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-sm" title="Espelhar"><i class="fa-solid fa-left-right"></i></button>
                 </div>
                 <button onclick="openModal('modalExport')" class="py-1.5 px-3 rounded-lg bg-brand-600 text-white font-bold text-xs shadow-md shadow-brand-500/20 flex items-center gap-1.5">
                     <i class="fa-solid fa-download"></i> Salvar
@@ -165,8 +165,8 @@
             </div>
 
             <!-- Canvas Workspace -->
-            <div class="flex-1 transparent-pattern relative flex items-center justify-center p-4 min-h-[300px] overflow-hidden">
-                <canvas id="mainCanvas" class="max-w-full max-h-[50vh] shadow-2xl rounded-lg object-contain transition-all"></canvas>
+            <div class="flex-1 transparent-pattern relative flex items-center justify-center p-4 min-h-[320px] overflow-hidden">
+                <canvas id="mainCanvas" class="max-w-full max-h-[48vh] shadow-2xl rounded-lg object-contain transition-all"></canvas>
                 
                 <!-- Loading Indicator -->
                 <div id="aiLoading" class="hidden absolute inset-0 bg-slate-950/70 backdrop-blur-sm flex flex-col items-center justify-center gap-3 text-white z-30">
@@ -179,25 +179,25 @@
             <div class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
                 <!-- Tab Menu Header -->
                 <div class="flex items-center gap-1 overflow-x-auto no-scrollbar border-b border-slate-100 dark:border-slate-800/80 px-2 py-1 text-xs font-medium text-slate-500 dark:text-slate-400">
-                    <button onclick="switchToolTab('ia')" class="tool-tab active px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5 text-brand-600 dark:text-brand-500 bg-brand-50 dark:bg-brand-500/10 font-bold">
+                    <button onclick="switchToolTab(this, 'ia')" class="tool-tab active px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5 text-brand-600 dark:text-brand-500 bg-brand-50 dark:bg-brand-500/10 font-bold">
                         <i class="fa-solid fa-wand-magic-sparkles"></i> Recursos IA
                     </button>
-                    <button onclick="switchToolTab('fundo')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
+                    <button onclick="switchToolTab(this, 'fundo')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
                         <i class="fa-solid fa-image"></i> Fundo
                     </button>
-                    <button onclick="switchToolTab('sombras')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
+                    <button onclick="switchToolTab(this, 'sombras')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
                         <i class="fa-solid fa-sun"></i> Sombras
                     </button>
-                    <button onclick="switchToolTab('ajustes')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
+                    <button onclick="switchToolTab(this, 'ajustes')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
                         <i class="fa-solid fa-sliders"></i> Ajustes
                     </button>
-                    <button onclick="switchToolTab('recorte')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
+                    <button onclick="switchToolTab(this, 'recorte')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
                         <i class="fa-solid fa-crop-simple"></i> Formatos
                     </button>
-                    <button onclick="switchToolTab('texto')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
+                    <button onclick="switchToolTab(this, 'texto')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
                         <i class="fa-solid fa-font"></i> Texto & Marca
                     </button>
-                    <button onclick="switchToolTab('filtros')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
+                    <button onclick="switchToolTab(this, 'filtros')" class="tool-tab px-3 py-2 rounded-lg whitespace-nowrap flex items-center gap-1.5">
                         <i class="fa-solid fa-wand-magic"></i> Filtros
                     </button>
                 </div>
@@ -294,6 +294,11 @@
                     <div id="panel-recorte" class="tool-panel hidden flex flex-col gap-3">
                         <span class="text-xs font-bold text-slate-500">Formatos Prontos para Marketplaces:</span>
                         <div class="flex gap-2 overflow-x-auto no-scrollbar py-1">
+                            <button onclick="cropToRatio('free', 'Livre')" class="min-w-[80px] p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+                                <i class="fa-solid fa-expand text-slate-500 text-base mb-1"></i>
+                                <div class="text-[10px] font-bold">Original</div>
+                                <div class="text-[9px] text-slate-400">Livre</div>
+                            </button>
                             <button onclick="cropToRatio(1, 'Shopee')" class="min-w-[80px] p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
                                 <i class="fa-solid fa-bag-shopping text-orange-500 text-base mb-1"></i>
                                 <div class="text-[10px] font-bold">Shopee</div>
@@ -307,14 +312,14 @@
                             <button onclick="cropToRatio(1, 'Amazon')" class="min-w-[80px] p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
                                 <i class="fa-brands fa-amazon text-amber-600 text-base mb-1"></i>
                                 <div class="text-[10px] font-bold">Amazon</div>
-                                <div class="text-[9px] text-slate-400">1:1 Fundo Bco</div>
+                                <div class="text-[9px] text-slate-400">1:1 Quadrado</div>
                             </button>
-                            <button onclick="cropToRatio(4/5, 'Instagram Feed')" class="min-w-[80px] p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+                            <button onclick="cropToRatio(0.8, 'Instagram Feed')" class="min-w-[80px] p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
                                 <i class="fa-brands fa-instagram text-pink-500 text-base mb-1"></i>
                                 <div class="text-[10px] font-bold">Instagram</div>
                                 <div class="text-[9px] text-slate-400">4:5 Vertical</div>
                             </button>
-                            <button onclick="cropToRatio(9/16, 'TikTok / Stories')" class="min-w-[80px] p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+                            <button onclick="cropToRatio(0.5625, 'TikTok / Stories')" class="min-w-[80px] p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
                                 <i class="fa-brands fa-tiktok text-slate-900 dark:text-white text-base mb-1"></i>
                                 <div class="text-[10px] font-bold">Stories/TikTok</div>
                                 <div class="text-[9px] text-slate-400">9:16 Full</div>
@@ -366,16 +371,16 @@
                 <div>
                     <label class="text-xs font-bold text-slate-500 mb-1.5 block">Formato do Arquivo</label>
                     <div class="grid grid-cols-3 gap-2">
-                        <button onclick="setExportFormat('png')" id="fmtPNG" class="format-btn active py-2 rounded-xl border border-brand-500 bg-brand-50 dark:bg-brand-500/10 text-brand-600 font-bold text-xs">PNG</button>
-                        <button onclick="setExportFormat('jpg')" id="fmtJPG" class="format-btn py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold">JPG</button>
-                        <button onclick="setExportFormat('webp')" id="fmtWEBP" class="format-btn py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold">WEBP</button>
+                        <button onclick="setExportFormat('png', this)" id="fmtPNG" class="format-btn active py-2 rounded-xl border border-brand-500 bg-brand-50 dark:bg-brand-500/10 text-brand-600 font-bold text-xs">PNG</button>
+                        <button onclick="setExportFormat('jpg', this)" id="fmtJPG" class="format-btn py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold">JPG</button>
+                        <button onclick="setExportFormat('webp', this)" id="fmtWEBP" class="format-btn py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold">WEBP</button>
                     </div>
                 </div>
 
                 <div>
                     <label class="text-xs font-bold text-slate-500 mb-1.5 block">Qualidade da Imagem</label>
                     <select id="exportQuality" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-xs font-medium">
-                        <option value="1.0">Máxima (100% - Recomendado Mktplaces)</option>
+                        <option value="1.0">Máxima (100% - Recomendado Marketplaces)</option>
                         <option value="0.8">Alta (80% - Arquivos Leves)</option>
                         <option value="0.6">Média (60%)</option>
                     </select>
@@ -450,6 +455,7 @@
             blur: 0,
             rotation: 0,
             flipX: 1,
+            targetRatio: 'free',
             watermark: '',
             watermarkOpacity: 0.5,
             exportFormat: 'png',
@@ -509,6 +515,8 @@
                     appState.originalImage = img;
                     appState.processedImage = img;
                     appState.imageLoaded = true;
+                    appState.history = [];
+                    appState.historyIndex = -1;
                     saveHistory();
                     switchView('editor');
                 };
@@ -523,13 +531,28 @@
 
             const img = appState.processedImage || appState.originalImage;
 
-            // Set canvas size matching natural or rotated dimensions
-            if (appState.rotation % 180 === 0) {
-                canvas.width = img.width || 800;
-                canvas.height = img.height || 800;
+            let baseW = img.width || 800;
+            let baseH = img.height || 800;
+
+            if (appState.rotation % 180 !== 0) {
+                const temp = baseW;
+                baseW = baseH;
+                baseH = temp;
+            }
+
+            // Aspect Ratio Crop & Dimension Adjustments
+            if (appState.targetRatio && appState.targetRatio !== 'free') {
+                const currentRatio = baseW / baseH;
+                if (currentRatio > appState.targetRatio) {
+                    canvas.width = baseW;
+                    canvas.height = Math.round(baseW / appState.targetRatio);
+                } else {
+                    canvas.width = Math.round(baseH * appState.targetRatio);
+                    canvas.height = baseH;
+                }
             } else {
-                canvas.width = img.height || 800;
-                canvas.height = img.width || 800;
+                canvas.width = baseW;
+                canvas.height = baseH;
             }
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -620,7 +643,7 @@
             ctx.restore();
         }
 
-        // AI Background Removal Engine (Simulated Intelligent Extraction)
+        // AI Background Removal Engine
         function removeBackground() {
             showAiLoading('AI Removendo Fundo...');
             setTimeout(() => {
@@ -633,13 +656,12 @@
                 const imgData = tCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
                 const data = imgData.data;
 
-                // Threshold background removal simulation (clears lighter edges/backgrounds)
                 const cornerColor = { r: data[0], g: data[1], b: data[2] };
                 for (let i = 0; i < data.length; i += 4) {
                     const r = data[i], g = data[i+1], b = data[i+2];
                     const diff = Math.abs(r - cornerColor.r) + Math.abs(g - cornerColor.g) + Math.abs(b - cornerColor.b);
                     if (diff < 80) {
-                        data[i + 3] = 0; // Alpha transparent
+                        data[i + 3] = 0;
                     }
                 }
 
@@ -663,29 +685,31 @@
                 appState.brightness = 10;
                 appState.contrast = 20;
                 appState.saturation = 15;
-                document.getElementById('adjBrightness').value = 10;
-                document.getElementById('adjContrast').value = 20;
-                document.getElementById('adjSaturation').value = 15;
+                updateUIControls();
                 hideAiLoading();
                 saveHistory();
                 renderCanvas();
             }, 600);
         }
 
-        // Tool Tab Switcher
-        function switchToolTab(tabName) {
+        // Tool Tab Switcher Fix
+        function switchToolTab(btn, tabName) {
             document.querySelectorAll('.tool-tab').forEach(b => {
                 b.classList.remove('active', 'text-brand-600', 'dark:text-brand-500', 'bg-brand-50', 'dark:bg-brand-500/10', 'font-bold');
             });
             document.querySelectorAll('.tool-panel').forEach(p => p.classList.add('hidden'));
 
-            event.currentTarget.classList.add('active', 'text-brand-600', 'dark:text-brand-500', 'bg-brand-50', 'dark:bg-brand-500/10', 'font-bold');
-            document.getElementById(`panel-${tabName}`).classList.remove('hidden');
+            if (btn) {
+                btn.classList.add('active', 'text-brand-600', 'dark:text-brand-500', 'bg-brand-50', 'dark:bg-brand-500/10', 'font-bold');
+            }
+            const panel = document.getElementById(`panel-${tabName}`);
+            if (panel) panel.classList.remove('hidden');
         }
 
         // Setting Actions
         function setBackground(type) {
             appState.bgType = type;
+            saveHistory();
             renderCanvas();
         }
 
@@ -698,6 +722,7 @@
                 img.onload = function() {
                     appState.customBgImage = img;
                     appState.bgType = 'custom';
+                    saveHistory();
                     renderCanvas();
                 };
                 img.src = event.target.result;
@@ -707,6 +732,7 @@
 
         function setShadow(type) {
             appState.shadowType = type;
+            saveHistory();
             renderCanvas();
         }
 
@@ -733,25 +759,30 @@
 
         function rotateImage() {
             appState.rotation = (appState.rotation + 90) % 360;
+            saveHistory();
             renderCanvas();
         }
 
         function flipImage() {
             appState.flipX = appState.flipX === 1 ? -1 : 1;
+            saveHistory();
             renderCanvas();
         }
 
         function cropToRatio(ratio, label) {
             showAiLoading(`Formatando para ${label}...`);
+            appState.targetRatio = ratio;
             setTimeout(() => {
                 hideAiLoading();
+                saveHistory();
                 renderCanvas();
-            }, 400);
+            }, 300);
         }
 
         function addWatermark() {
             appState.watermark = document.getElementById('watermarkText').value;
             appState.watermarkOpacity = document.getElementById('wmOpacity').value / 100;
+            saveHistory();
             renderCanvas();
         }
 
@@ -765,14 +796,16 @@
             } else if (filter === 'contrast') {
                 appState.brightness = 0; appState.contrast = 35; appState.saturation = 20;
             }
+            updateUIControls();
+            saveHistory();
             renderCanvas();
         }
 
-        // Export Functionality
-        function setExportFormat(fmt) {
+        // Export Functionality Fix
+        function setExportFormat(fmt, btn) {
             appState.exportFormat = fmt;
             document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('border-brand-500', 'bg-brand-50', 'text-brand-600'));
-            event.currentTarget.classList.add('border-brand-500', 'bg-brand-50', 'text-brand-600');
+            if (btn) btn.classList.add('border-brand-500', 'bg-brand-50', 'text-brand-600');
         }
 
         function downloadFinalImage() {
@@ -798,37 +831,66 @@
             container.prepend(card);
         }
 
-        // Undo/Redo Engine
+        // Undo/Redo Engine with Full State Sync
         function saveHistory() {
             if (appState.historyIndex < appState.history.length - 1) {
                 appState.history = appState.history.slice(0, appState.historyIndex + 1);
             }
-            appState.history.push(JSON.parse(JSON.stringify({
+            appState.history.push({
                 bgType: appState.bgType,
                 shadowType: appState.shadowType,
+                shadowOpacity: appState.shadowOpacity,
                 brightness: appState.brightness,
                 contrast: appState.contrast,
-                rotation: appState.rotation
-            })));
+                saturation: appState.saturation,
+                blur: appState.blur,
+                rotation: appState.rotation,
+                flipX: appState.flipX,
+                targetRatio: appState.targetRatio,
+                watermark: appState.watermark,
+                watermarkOpacity: appState.watermarkOpacity
+            });
             appState.historyIndex++;
         }
 
         function undo() {
             if (appState.historyIndex > 0) {
                 appState.historyIndex--;
-                const state = appState.history[appState.historyIndex];
-                Object.assign(appState, state);
-                renderCanvas();
+                applyStateFromHistory(appState.history[appState.historyIndex]);
             }
         }
 
         function redo() {
             if (appState.historyIndex < appState.history.length - 1) {
                 appState.historyIndex++;
-                const state = appState.history[appState.historyIndex];
-                Object.assign(appState, state);
-                renderCanvas();
+                applyStateFromHistory(appState.history[appState.historyIndex]);
             }
+        }
+
+        function applyStateFromHistory(state) {
+            Object.assign(appState, state);
+            updateUIControls();
+            renderCanvas();
+        }
+
+        function updateUIControls() {
+            document.getElementById('adjBrightness').value = appState.brightness;
+            document.getElementById('valBrightness').innerText = appState.brightness;
+            
+            document.getElementById('adjContrast').value = appState.contrast;
+            document.getElementById('valContrast').innerText = appState.contrast;
+            
+            document.getElementById('adjSaturation').value = appState.saturation;
+            document.getElementById('valSaturation').innerText = appState.saturation;
+            
+            document.getElementById('adjBlur').value = appState.blur;
+            document.getElementById('valBlur').innerText = appState.blur;
+
+            document.getElementById('shadowOpacity').value = Math.round(appState.shadowOpacity * 100);
+            document.getElementById('shadowOpacityVal').innerText = Math.round(appState.shadowOpacity * 100) + '%';
+
+            document.getElementById('watermarkText').value = appState.watermark || '';
+            document.getElementById('wmOpacity').value = Math.round((appState.watermarkOpacity || 0.5) * 100);
         }
 
         // Loading and Modal Helpers
